@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <title>CRUD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@499&display=swap" rel="stylesheet">
+</head>
+<style>
+    /* Adiciona estilo para marcar a linha quando clicada */
+    li {
+        cursor: pointer;
+    }
+    li.completed {
+        text-decoration: line-through;
+    }
+</style>
+<body>
+    <div id="tarefa">
+
+        <br>
+    <h2>LISTA DE TAREFAS</h2>
+
+    <div id="div_area_nova_tarefa">
+        <label for="input_nova_tarefa"></label>
+        <input placeholder="     Digite sua nova tarefa:" type="text" class="input_nova_tarefa2" id="input_nova_tarefa" maxlength="50">
+        <a id="botaodeadicionar"  class="button" onclick="adicionaTarefaNaLista()" ><p id="mais">ADICIONAR</p></a>
+        <p id="clique">Clique na tarefa para riscar</p>
+    </div>
+    <div id="div_lista_de_tarefas">
+        
+        <ul id="lista_de_tarefas">
+        </ul>
+        <br>
+    </div>    
+</div>
+
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
+
+
