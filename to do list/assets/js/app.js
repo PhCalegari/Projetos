@@ -1,13 +1,22 @@
+window.onload = function() {
+    carregarTarefas();
+};
+
+function carregarTarefas() {
+    const tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
+    tarefas.forEach(function(tarefa) {
+        criaNovoItemDaLista(tarefa.texto, tarefa.concluida);
+    });
+}
+
 function adicionaTarefaNaLista() {
     const novaTarefa = document.getElementById('input_nova_tarefa').value;
     if (novaTarefa.trim() === '') {
-        // Se estiver vazio, exibe uma mensagem de alerta e não faz nada
         alert('Por favor, Insira um texto na tarefa.');
-        return; // Sai da função sem adicionar a tarefa
+        return;
     }
-    
-    // Se o campo de texto não estiver vazio, cria a nova tarefa
     criaNovoItemDaLista(novaTarefa);
+    salvarTarefas();
 }
 
 function criaNovoItemDaLista(textoDaTarefa) {
@@ -20,8 +29,8 @@ function criaNovoItemDaLista(textoDaTarefa) {
     novoItem.appendChild(spanTexto);
     novoItem.addEventListener('click', function() {
         this.classList.toggle('completed');
+        salvarTarefas(); // Salva as tarefas sempre que houver uma mudança
     });
-    novoItem.appendChild(spanTexto);
     novoItem.appendChild(criaBotaoEditarTarefa(novoItem.id));
     novoItem.appendChild(criaBotaoExcluirTarefa(novoItem.id));
     listaTarefas.appendChild(novoItem);
@@ -38,20 +47,18 @@ function criaInputCheckBoxTarefa(idTarefa) {
     inputTarefa.setAttribute('onclick', `mudaEstadoTarefa('${idTarefa}')`);
     return inputTarefa;
 }
+
 function mudaEstadoTarefa(idTarefa) {
     const tarefaSelecionada = document.getElementById(idTarefa);
     const spanTexto = tarefaSelecionada.querySelector('span');
     
-    // Verifica se o texto está riscado
     if (spanTexto.style.textDecoration === 'line-through') {
-        // Se estiver riscado, remove o risco
         spanTexto.style.textDecoration = 'none';
     } else {
-        // Se não estiver riscado, adiciona o risco
         spanTexto.style.textDecoration = 'line-through';
     }
-}   
-
+    salvarTarefas(); // Salva as tarefas sempre que houver uma mudança
+}
 
 function criaBotaoEditarTarefa(idTarefa) {
     const botaoEditar = document.createElement('button');
@@ -67,13 +74,13 @@ function editarTarefa(idTarefa) {
     const novoTexto = prompt('Digite o novo texto da tarefa:', spanTexto.innerText);
     if (novoTexto != null) {
         spanTexto.innerText = novoTexto;
-        
+        salvarTarefas();
     }
 }
 
 function criaBotaoExcluirTarefa(idTarefa) {
     const botaoExcluir = document.createElement('button');
-    botaoExcluir.innerText = '❌    ';
+    botaoExcluir.innerText = '❌';
     botaoExcluir.id = `botaoexcluir`;
     botaoExcluir.setAttribute('onclick', `excluirTarefa('${idTarefa}')`);
     return botaoExcluir;
@@ -81,5 +88,28 @@ function criaBotaoExcluirTarefa(idTarefa) {
 
 function excluirTarefa(idTarefa) {
     const tarefaSelecionada = document.getElementById(idTarefa);
-    tarefaSelecionada.remove();
+    tarefaSelecionada.style.display="none";
+    salvarTarefas();
+}
+function exibirTarefas() {
+    const listaTarefas = document.getElementById('lista_de_tarefas');
+    listaTarefas.childNodes.forEach(function(item) {
+        if (item.tagName === 'LI' && item.style.display === "none") {
+            item.style.display = "block";
+        }
+    });
+    salvarTarefas();
+}
+
+function salvarTarefas() {
+    const listaTarefas = document.getElementById('lista_de_tarefas');
+    const tarefas = [];
+    listaTarefas.childNodes.forEach(function(item) {
+        if (item.tagName === 'LI') {
+            const texto = item.querySelector('span').innerText;
+            const concluida = item.querySelector('span').style.textDecoration === 'line-through';
+            tarefas.push({ texto, concluida });
+        }
+    });
+    localStorage.setItem('tarefas', JSON.stringify(tarefas));
 }
